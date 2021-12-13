@@ -186,5 +186,9 @@ $mpdf = new \Mpdf\Mpdf( [
 			]
 		],
 ] );
+
+$mpdf->SetHeader('Document Common Header Title|Center Text|{PAGENO}');
+$mpdf->SetFooter('Document common footer Title');
+
 $mpdf->WriteHTML( $html );
 $mpdf->Output();
