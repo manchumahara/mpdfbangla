@@ -1,21 +1,13 @@
 <?php
 
-require_once __DIR__ . '/vendor/autoload.php';
-
-// Buffer the following html with PHP so we can store it to a variable later
 $html = '
-<!DOCTYPE html>
-    <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>MPDF</title>
-
-        <!-- file css for style on report  -->
-        <link rel="stylesheet" href="./index.css" />
-        <style>
-        p {	margin: 0pt; }
+<html>
+<head>
+<style>
+body {font-family: sans-serif;
+	font-size: 10pt;
+}
+p {	margin: 0pt; }
 table.items {
 	border: 0.1mm solid #000000;
 }
@@ -45,43 +37,37 @@ table thead td { background-color: #EEEEEE;
 	text-align: "." center;
 }
 </style>
-    </head>
-      <body>
-        <div class="container">
-            <!-- so this row should be our header of report  -->
-            <div class="row">
-                <div class="header">
-                    <div class="logo_description_report_header">
-                        <img src="./images/logo.png" alt="" />
-                        <div class="brand_company">
-                            For testing report MPDF in বাংলা ভাষা
-                        </div>
-                       
-                    </div>
-                </div>
-            </div>
-            <!--mpdf
+</head>
+<body>
+
+<!--mpdf
 <htmlpageheader name="myheader">
 <table width="100%"><tr>
 <td width="50%" style="color:#0000BB; "><span style="font-weight: bold; font-size: 14pt;">Acme Trading Co.</span><br />123 Anystreet<br />Your City<br />GD12 4LP<br /><span style="font-family:dejavusanscondensed;">&#9742;</span> 01777 123 567</td>
 <td width="50%" style="text-align: right;">Invoice No.<br /><span style="font-weight: bold; font-size: 12pt;">0012345</span></td>
 </tr></table>
 </htmlpageheader>
+
 <htmlpagefooter name="myfooter">
 <div style="border-top: 1px solid #000000; font-size: 9pt; text-align: center; padding-top: 3mm; ">
 Page {PAGENO} of {nb}
 </div>
 </htmlpagefooter>
+
 <sethtmlpageheader name="myheader" value="on" show-this-page="1" />
 <sethtmlpagefooter name="myfooter" value="on" />
 mpdf-->
+
 <div style="text-align: right">Date: 13th November 2008</div>
+
 <table width="100%" style="font-family: serif;" cellpadding="10"><tr>
 <td width="45%" style="border: 0.1mm solid #888888; "><span style="font-size: 7pt; color: #555555; font-family: sans;">SOLD TO:</span><br /><br />345 Anotherstreet<br />Little Village<br />Their City<br />CB22 6SO</td>
 <td width="10%">&nbsp;</td>
 <td width="45%" style="border: 0.1mm solid #888888;"><span style="font-size: 7pt; color: #555555; font-family: sans;">SHIP TO:</span><br /><br />345 Anotherstreet<br />Little Village<br />Their City<br />CB22 6SO</td>
 </tr></table>
+
 <br />
+
 <table class="items" width="100%" style="font-size: 9pt; border-collapse: collapse; " cellpadding="8">
 <thead>
 <tr>
@@ -269,30 +255,25 @@ mpdf-->
 </tr>
 </tbody>
 </table>
-<div style="text-align: center; font-style: italic;">Payment terms: payment due in 30 days</div>                      
-        </div>
-    </body>
-    </html>';
 
-$defaultConfig = (new Mpdf\Config\ConfigVariables())->getDefaults();
-$fontDirs = $defaultConfig['fontDir'];
 
-$defaultFontConfig = (new Mpdf\Config\FontVariables())->getDefaults();
-$fontData = $defaultFontConfig['fontdata'];
+<div style="text-align: center; font-style: italic;">Payment terms: payment due in 30 days</div>
 
-$mpdf = new \Mpdf\Mpdf( [
-	'mode'         => 'utf-8',
-	'default_font' => 'bangla',
-	'fontdata' => $fontData + [
-			'bangla' => [
-				'R' => 'kalpurush.ttf'
-			]
-		],
-] );
 
-//same header and footer can be set from html too
-//$mpdf->SetHeader('Document Common Header Title|Center Text|{PAGENO}');
-//$mpdf->SetFooter('Document common footer Title');
+</body>
+</html>
+';
+
+require_once __DIR__ . '/bootstrap.php';
+
+$mpdf = new \Mpdf\Mpdf([
+	'margin_left' => 20,
+	'margin_right' => 15,
+	'margin_top' => 48,
+	'margin_bottom' => 25,
+	'margin_header' => 10,
+	'margin_footer' => 10
+]);
 
 $mpdf->SetProtection(array('print'));
 $mpdf->SetTitle("Acme Trading Co. - Invoice");
@@ -303,5 +284,6 @@ $mpdf->watermark_font = 'DejaVuSansCondensed';
 $mpdf->watermarkTextAlpha = 0.1;
 $mpdf->SetDisplayMode('fullpage');
 
-$mpdf->WriteHTML( $html );
+$mpdf->WriteHTML($html);
+
 $mpdf->Output();
